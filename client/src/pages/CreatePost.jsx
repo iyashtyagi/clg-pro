@@ -22,6 +22,7 @@ const CreatePost = () => {
         const response = await fetch('http://localhost:8000/api/v1/dalle', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer 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`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -51,6 +52,7 @@ const CreatePost = () => {
         const response = await fetch('http://localhost:8000/api/v1/post', {
           method: 'POST',
           headers: {
+            // 'Authorization': `Bearer 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`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(form)
@@ -79,9 +81,12 @@ const CreatePost = () => {
 
   return (
     <section className="max-w-7xl mx-auto">
-      <div>
-        <h1 className="font-extrabold text-[#222328] text-[32px]">Create</h1>
-        <p className="mt-2 text-[#666e75] text-[14px] max-w-[500px]">Generate an imaginative image through DALL-E AI and share it with the community</p>
+      <div className="justify-center text-center">
+        {/* <h1 className="font-extrabold text-[#222328] text-4xl sm:text-5xl mb-4">Create AI Images</h1>
+        <p className="text-[#666e75] text-lg max-w-md mx-auto">Unleash the power of our AI model from Hugging Face to turn your wildest ideas into stunning visual creations. Share your imagination with the community and bring your dreams to life!</p> */}
+
+        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">Create <mark class="px-2 text-white bg-blue-600 rounded dark:bg-blue-500">AI</mark> Images</h1>
+        <p class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">Unleash the power of our AI model from Hugging Face to turn your wildest ideas into stunning visual creations. Share your imagination with the community and bring your dreams to life!</p>
       </div>
 
       <form className="mt-16 max-w-3xl" onSubmit={handleSubmit}>
@@ -99,33 +104,32 @@ const CreatePost = () => {
             labelName="Prompt"
             type="text"
             name="prompt"
-            placeholder="An Impressionist oil painting of sunflowers in a purple vase…"
+            placeholder="A Bollywood dance party with dancers in vibrant traditional attire...."
             value={form.prompt}
             handleChange={handleChange}
             isSurpriseMe
             handleSurpriseMe={handleSurpriseMe}
           />
 
-          <div
-            className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
-
+          <div className="relative bg-gradient-to-b from-[#E2E8F0] to-[#F0F4F8] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg">
             {form.photo ? (
               <img
                 src={form.photo}
                 alt={form.prompt}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover rounded-lg"
               />
             ) : (
-              <img
-                src={preview}
-                alt="preview"
-                className="w-9/12 h-9/12 object-contain opacity-40"
-              />
+              <div className="w-full h-full flex items-center justify-center opacity-40 rounded-lg">
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="w-9/12 h-9/12 object-contain"
+                />
+              </div>
             )}
 
             {generatingImg && (
-              <div
-                className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
+              <div className="absolute inset-0 z-10 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
                 <Loader />
               </div>
             )}
@@ -136,17 +140,22 @@ const CreatePost = () => {
           <button
             type="button"
             onClick={generateImage}
-            className=" text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            className={`text-white bg-gradient-to-r from-[#4CAF50] to-[#45A249] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center focus:outline-none transition-all duration-300 ${generatingImg ? 'cursor-not-allowed opacity-70' : 'hover:opacity-90'}`}
+            disabled={generatingImg}
           >
             {generatingImg ? 'Generating...' : 'Generate'}
           </button>
         </div>
 
+
         <div className="mt-10">
-          <p className="mt-2 text-[#666e75] text-[14px]">** Once you have created the image you want, you can share it with others in the community **</p>
+          <p className="mt-2 text-[#666e75] text-[14px]">
+            <strong>Ready to showcase your creation?</strong> Share your imaginative image with the community!
+          </p>
           <button
             type="submit"
-            className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            className={`mt-4 text-white bg-gradient-to-r from-[#3B82F6] to-[#2563EB] font-medium rounded-md text-sm w-full sm:w-auto px-6 py-3 focus:outline-none transition-all duration-300 hover:opacity-90 transform hover:scale-105`}
+            disabled={loading}
           >
             {loading ? 'Sharing...' : 'Share with the Community'}
           </button>

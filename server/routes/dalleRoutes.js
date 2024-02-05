@@ -1,31 +1,38 @@
 import express from "express";
 import * as dotenv from "dotenv";
-import OpenAI from "openai";
+// import OpenAI from "openai";
+
+import fetch from "node-fetch";
 
 dotenv.config();
 
 const router = express.Router();
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// const openai = new OpenAI({
+//     apiKey: process.env.OPENAI_API_KEY,
+// });
 
 router.route("/").get((req, res) => {
-    res.send("Hello from OpenAI");
+    res.send("Hello from Hugging Face");
 });
 
 router.route("/").post(async (req, res) => {
     try {
         const { prompt } = req.body;
+        const stabilityaiApiKey = process.env.STABILITY_AI_TOKEN;
 
-        const aiResponse = await openai.createImage({
-            prompt,
-            n: 1,
-            size: "1024x1024",
-            response_format: "b64_json",
-        });
+        const response = await fetch(
+            "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+            {
+                headers: { Authorization: `Bearer ${stabilityaiApiKey}` },
+                method: "POST",
+                body: JSON.stringify({ inputs: prompt }),
+            }
+        );
 
-        const image = aiResponse.data.data[0].b64_json;
+        const result = await response.blob();
+        const image = Buffer.from(await result.arrayBuffer()).toString("base64");
+
         res.status(200).json({ photo: image });
     } catch (error) {
         console.error(error);
