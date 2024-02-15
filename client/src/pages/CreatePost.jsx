@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { preview } from '../assets';
 import { getRandomPrompt } from '../utils';
@@ -14,12 +14,25 @@ const CreatePost = () => {
 
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [imageCount, setImageCount] = useState(0);
+
+  useEffect(() => {
+    const count = localStorage.getItem('imageCount');
+    if (count) {
+      setImageCount(parseInt(count, 10));
+    }
+  }, []);
 
   const generateImage = async () => {
     if (form.prompt) {
       try {
+        if (imageCount >= 3) {
+          alert('You have reached the limit of 3 images per day. Please contact Nikhil to generate more.');
+          return;
+        }
+
         setGeneratingImg(true);
-        const response = await fetch('http://localhost:8000/api/v1/dalle', {
+        const response = await fetch('http://localhost:8000/api/v1/imgGenerate', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer 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`,
@@ -32,6 +45,8 @@ const CreatePost = () => {
 
         const data = await response.json();
         setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
+        setImageCount(imageCount + 1);
+        localStorage.setItem('imageCount', imageCount + 1);
       } catch (error) {
         alert(error);
       } finally {
