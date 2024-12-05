@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { preview } from '../assets';
 import { getRandomPrompt } from '../utils';
@@ -14,23 +14,10 @@ const CreatePost = () => {
 
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [imageCount, setImageCount] = useState(0);
-
-  useEffect(() => {
-    const count = localStorage.getItem('imageCount');
-    if (count) {
-      setImageCount(parseInt(count, 10));
-    }
-  }, []);
 
   const generateImage = async () => {
     if (form.prompt) {
       try {
-        if (imageCount >= 3) {
-          alert('You have reached the limit of 3 images per day. Please contact Nikhil to generate more.');
-          return;
-        }
-
         setGeneratingImg(true);
         const response = await fetch('http://localhost:8000/api/v1/imgGenerate', {
           method: 'POST',
@@ -45,17 +32,15 @@ const CreatePost = () => {
 
         const data = await response.json();
         setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
-        setImageCount(imageCount + 1);
-        localStorage.setItem('imageCount', imageCount + 1);
       } catch (error) {
         alert(error);
       } finally {
         setGeneratingImg(false);
       }
     } else {
-      alert("Please Provide a prompt")
+      alert("Please Provide a prompt");
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,27 +52,26 @@ const CreatePost = () => {
         const response = await fetch('http://localhost:8000/api/v1/post', {
           method: 'POST',
           headers: {
-            // 'Authorization': `Bearer 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`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(form)
-        })
+          body: JSON.stringify(form),
+        });
 
         await response.json();
         navigate("/");
       } catch (error) {
-        alert(error)
+        alert(error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     } else {
       alert("Please enter a prompt and generate an image");
     }
-  }
+  };
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSurpriseMe = () => {
     const randomPrompt = getRandomPrompt(form.prompt);
@@ -97,11 +81,12 @@ const CreatePost = () => {
   return (
     <section className="max-w-7xl mx-auto">
       <div className="justify-center text-center">
-        {/* <h1 className="font-extrabold text-[#222328] text-4xl sm:text-5xl mb-4">Create AI Images</h1>
-        <p className="text-[#666e75] text-lg max-w-md mx-auto">Unleash the power of our AI model from Hugging Face to turn your wildest ideas into stunning visual creations. Share your imagination with the community and bring your dreams to life!</p> */}
-
-        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">Create <mark class="px-2 text-white bg-blue-600 rounded dark:bg-blue-500">AI</mark> Images</h1>
-        <p class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">Unleash the power of our AI model from Hugging Face to turn your wildest ideas into stunning visual creations. Share your imagination with the community and bring your dreams to life!</p>
+        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">
+          Create <mark className="px-2 text-white bg-blue-600 rounded dark:bg-blue-500">AI</mark> Images
+        </h1>
+        <p className="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
+          Unleash the power of our AI model from Hugging Face to turn your wildest ideas into stunning visual creations. Share your imagination with the community and bring your dreams to life!
+        </p>
       </div>
 
       <form className="mt-16 max-w-3xl" onSubmit={handleSubmit}>
@@ -110,7 +95,7 @@ const CreatePost = () => {
             labelName="Your Name"
             type="text"
             name="name"
-            placeholder="Ex. Nikhil Dixit"
+            placeholder="Yash Tyagi"
             value={form.name}
             handleChange={handleChange}
           />
@@ -161,7 +146,6 @@ const CreatePost = () => {
             {generatingImg ? 'Generating...' : 'Generate'}
           </button>
         </div>
-
 
         <div className="mt-10">
           <p className="mt-2 text-[#666e75] text-[14px]">
