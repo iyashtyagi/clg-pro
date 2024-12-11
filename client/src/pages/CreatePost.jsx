@@ -5,6 +5,7 @@ import { preview } from '../assets';
 import { getRandomPrompt } from '../utils';
 import { FormField, Loader } from '../components';
 
+const backend_url = "https://vbackend.yashtyagi.in"
 const CreatePost = () => {
   const navigate = useNavigate();
   const { user } = useUser(); // Get the current user from Clerk
@@ -21,7 +22,7 @@ const CreatePost = () => {
     if (form.prompt) {
       try {
         setGeneratingImg(true);
-        const response = await fetch('http://localhost:8000/api/v1/imgGenerate', {
+        const response = await fetch(`${backend_url}/api/v1/imgGenerate`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer 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`,
@@ -51,7 +52,7 @@ const CreatePost = () => {
       setLoading(true);
 
       try {
-        const response = await fetch('http://localhost:8000/api/v1/post', {
+        const response = await fetch(`${backend_url}/api/v1/post`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
