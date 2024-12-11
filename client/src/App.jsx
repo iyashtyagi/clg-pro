@@ -1,7 +1,27 @@
 import React from 'react'
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/clerk-react';
 import { Home, CreatePost } from './pages';
+
+const NavigationButton = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isCreatePostPage = location.pathname === '/create-post';
+
+  const handleClick = () => {
+    navigate(isCreatePostPage ? '/' : '/create-post');
+  };
+
+  return (
+    <button 
+      onClick={handleClick} 
+      className='font-inter font-medium bg-blue-500 text-white px-4 py-2 rounded-md'
+    >
+      {isCreatePostPage ? 'Home' : 'Create'}
+    </button>
+  );
+};
 
 const App = () => {
   return (
@@ -12,9 +32,7 @@ const App = () => {
         </Link> 
 
         <div className='flex items-center gap-x-4'>
-          <Link to="/create-post" className='font-inter font-medium bg-blue-500 text-white px-4 py-2 rounded-md mr-2'>
-            Create
-          </Link>
+          <NavigationButton />
 
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
